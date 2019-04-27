@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysd.dao.StudentMapper">
+	
+	<select id="selectStuCount" parameterType="fenye"  resultType="int">
+		select count(id) from student s,classes c
+		<where>
+			s.classesid=c.classesid
+			<if test="student.id != null and student.id !=''">
+				and id=#{student.id}
+			</if>
+			<if test="student.name != null and student.name !=''">
+				and name=#{student.name}
+			</if>
+			<if test="student.age != null and student.age !=''">
+				and age=#{student.age}
+			</if>
+			<if test="student.birthday != null and student.birthday !=''">
+				and birthday=#{student.birthday}
+			</if>
+			<if test="student.classes.classesid != null and student.classes.classesid !=''">
+					and c.classesid=#{student.classes.classesid}
+		    </if>
+		</where> 
+	</select>
+
+	<!--手动映射查询的结果集  -->
+	<resultMap type="student" id="studentclasses">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="sex" property="sex"/>
+		<result column="birthday" property="birthday"/>
+		<result column="classesid" property="classes.classesid"/>
+		<result column="classesName" property="classes.classesName"/>
+		<result column="age" property="age"/>
+	</resultMap>
+	<select id="selectStu" parameterType="fenye"  resultMap="studentclasses">
+		select s.id,s.`name`,s.age,s.sex,s.birthday,c.classesid,c.classesName from student s,classes c 
+			<where>
+				s.classesid=c.classesid
+				<if test="student.id != null and student.id !=''">
+					and id=#{student.id}
+				</if>
+				<if test="student.name != null and student.name !=''">
+					and name=#{student.name}
+				</if>
+				<if test="student.age != null and student.age !=''">
+					and age=#{student.age}
+				</if>
+				<if test="student.birthday != null and student.birthday !=''">
+					and birthday=#{student.birthday}
+				</if>
+				<if test="student.classes.classesid != null and student.classes.classesid !=''">
+					and c.classesid=#{student.classes.classesid}
+				</if>	
+			</where> 
+		limit #{page},#{pageSize}; 
+	</select>
+	
+	<update id="updateStu" parameterType="student">
+		update student
+		<set>
+			<if test="name != null and name !=''">
+					name=#{name},
+				</if>
+				<if test="age != null and age !=''">
+					age=#{age},
+				</if>
+				<if test="birthday != null and birthday !=''">
+					birthday=#{birthday},
+				</if>
+				<if test="classes.classesid != null and classes.classesid !=''">
+					classesid=#{classes.classesid},
+				</if>
+		</set>
+		<where>
+				<if test="id != null and id !=''">
+					id=#{id}
+				</if>
+		</where>
+	</update>
+	
+	<select id="showClasses" resultType="classes">
+		select * from classes;
+	</select>
+	
+	
+</mapper>
